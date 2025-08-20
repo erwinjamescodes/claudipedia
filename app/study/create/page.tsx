@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { Dashboard } from "@/components/dashboard/dashboard";
+import { SessionCreationForm } from "@/components/study/session-creation-form";
 
-export default async function ProtectedPage() {
+export default async function CreateSessionPage() {
   const supabase = await createClient();
 
   const { data, error } = await supabase.auth.getClaims();
@@ -11,15 +11,15 @@ export default async function ProtectedPage() {
   }
 
   return (
-    <div className="flex-1 w-full flex flex-col gap-6">
+    <div className="flex-1 w-full flex flex-col gap-6 max-w-2xl mx-auto">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold">Board Exam Preparation</h1>
+        <h1 className="text-3xl font-bold">Create Study Session</h1>
         <p className="text-muted-foreground">
-          Track your progress and continue your study sessions
+          Configure your study session settings and preferences
         </p>
       </div>
       
-      <Dashboard />
+      <SessionCreationForm />
     </div>
   );
 }
