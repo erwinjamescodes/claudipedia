@@ -216,6 +216,7 @@ export default function ArcadeReviewPage({ params }: ArcadeReviewPageProps) {
     setFilter(value);
     setCurrentPage(1);
     updateURL(1, value);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const goToNextPage = () => {
@@ -223,6 +224,9 @@ export default function ArcadeReviewPage({ params }: ArcadeReviewPageProps) {
       const newPage = currentPage + 1;
       setCurrentPage(newPage);
       updateURL(newPage, filter);
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }, 100);
     }
   };
 
@@ -231,6 +235,9 @@ export default function ArcadeReviewPage({ params }: ArcadeReviewPageProps) {
       const newPage = currentPage - 1;
       setCurrentPage(newPage);
       updateURL(newPage, filter);
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }, 100);
     }
   };
 

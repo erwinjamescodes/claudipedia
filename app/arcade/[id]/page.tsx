@@ -96,12 +96,12 @@ export default function ArcadeQuestionPage({
   const handleNextQuestion = async () => {
     setIsLoadingNext(true);
     try {
-      // Clear state but keep current question until new one loads
+      // Fetch the next question first
+      await refetch();
+      
+      // Only clear state after new question is loaded
       nextQuestion();
       setSelectedAnswer(null);
-
-      // Fetch the next question - this will replace currentQuestion when successful
-      await refetch();
     } finally {
       setIsLoadingNext(false);
     }
@@ -342,7 +342,16 @@ export default function ArcadeQuestionPage({
 
             {/* Action Buttons */}
             <div className="flex gap-3">
-              {!(showFeedback && lastFeedback) ? (
+              {isLoadingNext ? (
+                <Button
+                  disabled={true}
+                  className="flex-1"
+                  size="lg"
+                >
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Please wait...
+                </Button>
+              ) : !(showFeedback && lastFeedback) ? (
                 <Button
                   onClick={handleSubmitAnswer}
                   disabled={!selectedAnswer || isLoadingSubmit}
@@ -361,18 +370,10 @@ export default function ArcadeQuestionPage({
               ) : (
                 <Button
                   onClick={handleNextQuestion}
-                  disabled={isLoadingNext}
                   className="flex-1"
                   size="lg"
                 >
-                  {isLoadingNext ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Please wait...
-                    </>
-                  ) : (
-                    "Next Question"
-                  )}
+                  Next Question
                 </Button>
               )}
             </div>

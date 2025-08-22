@@ -225,10 +225,10 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">
-                  Recent Performance
+                  Overall Score
                 </p>
                 <p className="text-2xl font-bold text-purple-600">
-                  {session.recentAccuracy}%
+                  {session.correctAnswers}/{session.totalQuestions}
                 </p>
               </div>
               <TrendingUp className="h-8 w-8 text-purple-600" />
@@ -481,36 +481,23 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
                           </div>
                         </div>
                         <div className="text-right">
-                          <span
-                            className={`text-xl font-bold ${
-                              chapter.accuracy >= 80
-                                ? "text-green-600"
-                                : chapter.accuracy >= 60
-                                ? "text-yellow-600"
-                                : "text-red-600"
-                            }`}
-                          >
-                            {chapter.accuracy}%
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4 mb-3">
-                        <div className="text-center">
-                          <p className="text-lg font-semibold text-blue-600">
-                            {chapter.totalQuestions}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            Total Questions
-                          </p>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-lg font-semibold text-green-600">
-                            {chapter.correctAnswers}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            Correct Answers
-                          </p>
+                          <div className="flex items-center gap-2">
+                            <span
+                              className={`text-xl font-bold ${
+                                chapter.accuracy >= 80
+                                  ? "text-green-600"
+                                  : chapter.accuracy >= 60
+                                  ? "text-yellow-600"
+                                  : "text-red-600"
+                              }`}
+                            >
+                              {chapter.accuracy}%
+                            </span>
+                            <span className="text-sm text-muted-foreground">
+                              ({chapter.correctAnswers}/{chapter.totalQuestions}
+                              )
+                            </span>
+                          </div>
                         </div>
                       </div>
 
