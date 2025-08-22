@@ -94,6 +94,7 @@
     body {
       min-height: 100vh !important;
       height: 100vh !important;
+      overflow-y: auto;
     }
     
     html {
@@ -102,6 +103,14 @@
     
     .min-h-screen {
       min-height: 100vh !important;
+      height: 100vh !important;
+      overflow-y: auto;
+    }
+    
+    /* Ensure content doesn't push beyond viewport */
+    .max-w-4xl {
+      max-height: calc(100vh - 2rem);
+      overflow-y: auto;
     }
   }
 }
