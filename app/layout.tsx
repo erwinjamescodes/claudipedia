@@ -45,7 +45,7 @@ export default function RootLayout({
         >
           <QueryProvider>
             <SessionValidator />
-            <div className="min-h-screen relative bg-slate-50">
+            <div className="min-h-screen min-h-[100vh] min-h-[-webkit-fill-available] relative bg-slate-50">
               {/* Top pattern - 3% of viewport height */}
               {/* <div
                 className="fixed top-0 left-0 right-0 z-0"

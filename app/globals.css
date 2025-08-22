@@ -62,7 +62,30 @@
   * {
     @apply border-border;
   }
-  body {
+  html, body {
     @apply bg-background text-foreground;
+    margin: 0;
+    padding: 0;
+    /* Fix mobile viewport issues */
+    -webkit-text-size-adjust: 100%;
+    height: 100%;
+    overflow-x: hidden;
+  }
+  
+  /* Fix mobile bottom spacing */
+  @supports(padding: max(0px)) {
+    body {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+  }
+  
+  /* Chrome mobile specific fixes */
+  body {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+  
+  html {
+    height: -webkit-fill-available;
   }
 }
