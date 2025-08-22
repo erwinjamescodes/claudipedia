@@ -1,42 +1,51 @@
-'use client'
+"use client";
 
-import React from 'react'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
-import { Gamepad2, Play, RotateCcw, Trophy, Clock, Target } from 'lucide-react'
-import { useCreateArcadeSession, useValidatePersistedSession } from '@/lib/hooks/use-arcade'
-import { useArcadeStore } from '@/lib/stores/arcade-store'
+import React from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Gamepad2, Play, RotateCcw, Trophy, Clock, Target } from "lucide-react";
+import {
+  useCreateArcadeSession,
+  useValidatePersistedSession,
+} from "@/lib/hooks/use-arcade";
+import { useArcadeStore } from "@/lib/stores/arcade-store";
 
 export default function ArcadePage() {
-  const router = useRouter()
-  const createSession = useCreateArcadeSession()
-  const { currentSession, clearSession } = useArcadeStore()
-  
+  const router = useRouter();
+  const createSession = useCreateArcadeSession();
+  const { currentSession, clearSession } = useArcadeStore();
+
   // Validate persisted session on component mount
-  useValidatePersistedSession()
+  useValidatePersistedSession();
 
   const handleStartArcade = async () => {
     try {
-      const result = await createSession.mutateAsync()
-      router.push(`/arcade/${result.sessionId}`)
+      const result = await createSession.mutateAsync();
+      router.push(`/arcade/${result.sessionId}`);
     } catch (error) {
-      console.error('Failed to start arcade session:', error)
+      console.error("Failed to start arcade session:", error);
     }
-  }
+  };
 
   const handleResumeSession = () => {
     if (currentSession) {
-      router.push(`/arcade/${currentSession.sessionId}`)
+      router.push(`/arcade/${currentSession.sessionId}`);
     }
-  }
+  };
 
   const handleStartNew = () => {
-    clearSession()
-    handleStartArcade()
-  }
+    clearSession();
+    handleStartArcade();
+  };
 
   return (
     <div className="container max-w-4xl mx-auto p-6 space-y-8">
@@ -47,8 +56,8 @@ export default function ArcadePage() {
           <h1 className="text-4xl font-bold">Arcade Mode</h1>
         </div>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Master all 1100 counseling questions in a simplified, game-like experience. 
-          Questions appear randomly, each one only once per session.
+          Master all 1100 counseling questions in a simplified, game-like
+          experience. Questions appear randomly, each one only once per session.
         </p>
       </div>
 
@@ -68,18 +77,29 @@ export default function ArcadePage() {
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <p className="font-medium">
-                  Question {currentSession.questionsCompleted + 1} of {currentSession.totalQuestions}
+                  Question {currentSession.questionsCompleted + 1} of{" "}
+                  {currentSession.totalQuestions}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  {currentSession.correctAnswers} correct • {currentSession.accuracy}% accuracy
+                  {currentSession.correctAnswers} correct •{" "}
+                  {currentSession.accuracy}% accuracy
                 </p>
               </div>
               <Badge variant="secondary">
-                {Math.round((currentSession.questionsCompleted / currentSession.totalQuestions) * 100)}% Complete
+                {Math.round(
+                  (currentSession.questionsCompleted /
+                    currentSession.totalQuestions) *
+                    100
+                )}
+                % Complete
               </Badge>
             </div>
-            <Progress 
-              value={(currentSession.questionsCompleted / currentSession.totalQuestions) * 100} 
+            <Progress
+              value={
+                (currentSession.questionsCompleted /
+                  currentSession.totalQuestions) *
+                100
+              }
               className="h-2"
             />
             <div className="flex gap-3">
@@ -87,14 +107,14 @@ export default function ArcadePage() {
                 <Play className="w-4 h-4 mr-2" />
                 Resume Session
               </Button>
-              <Button 
+              {/* <Button 
                 onClick={handleStartNew} 
                 variant="outline"
                 disabled={createSession.isPending}
               >
                 <RotateCcw className="w-4 h-4 mr-2" />
                 Start New
-              </Button>
+              </Button> */}
             </div>
           </CardContent>
         </Card>
@@ -109,7 +129,8 @@ export default function ArcadePage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground text-center">
-              All 1100 questions from 9 chapters. Each question appears exactly once per session.
+              All 1100 questions from 9 chapters. Each question appears exactly
+              once per session.
             </p>
           </CardContent>
         </Card>
@@ -121,7 +142,8 @@ export default function ArcadePage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground text-center">
-              Take your time to think through each question. Focus on learning, not speed.
+              Take your time to think through each question. Focus on learning,
+              not speed.
             </p>
           </CardContent>
         </Card>
@@ -133,7 +155,8 @@ export default function ArcadePage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground text-center">
-              Get instant feedback with detailed explanations to reinforce learning.
+              Get instant feedback with detailed explanations to reinforce
+              learning.
             </p>
           </CardContent>
         </Card>
@@ -150,8 +173,8 @@ export default function ArcadePage() {
                   Begin your journey through all 1100 counseling exam questions
                 </p>
               </div>
-              
-              <Button 
+
+              <Button
                 onClick={handleStartArcade}
                 size="lg"
                 className="px-8 py-6 text-lg"
@@ -184,7 +207,9 @@ export default function ArcadePage() {
           </div>
           <div>
             <div className="text-2xl font-bold text-primary">9</div>
-            <div className="text-sm text-muted-foreground">Chapters Covered</div>
+            <div className="text-sm text-muted-foreground">
+              Chapters Covered
+            </div>
           </div>
           <div>
             <div className="text-2xl font-bold text-primary">∞</div>
@@ -192,10 +217,12 @@ export default function ArcadePage() {
           </div>
           <div>
             <div className="text-2xl font-bold text-primary">✓</div>
-            <div className="text-sm text-muted-foreground">Instant Feedback</div>
+            <div className="text-sm text-muted-foreground">
+              Instant Feedback
+            </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
