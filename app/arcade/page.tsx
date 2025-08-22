@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Gamepad2, Play, RotateCcw, Trophy, Clock, Target } from "lucide-react";
+import { Play, RotateCcw } from "lucide-react";
 import {
   useCreateArcadeSession,
   useValidatePersistedSession,
@@ -42,18 +43,19 @@ export default function ArcadePage() {
     }
   };
 
-  const handleStartNew = () => {
-    clearSession();
-    handleStartArcade();
-  };
-
   return (
-    <div className="container max-w-4xl mx-auto p-6 space-y-8">
+    <div className="flex flex-col max-w-4xl mx-auto p-6 gap-8 h-screen ">
       {/* Header */}
       <div className="text-center space-y-4">
-        <div className="flex items-center justify-center gap-3">
-          <Gamepad2 className="h-10 w-10 text-primary" />
-          <h1 className="text-4xl font-bold">Arcade Mode</h1>
+        <div className="flex items-center justify-center gap-3 mt-20">
+          <Image
+            src="/book.webp"
+            alt="Book icon"
+            width={40}
+            height={40}
+            className="text-primary"
+          />
+          <p className="text-4xl font-bold">Claudipedia</p>
         </div>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           Master all 1100 counseling questions in a simplified, game-like
@@ -63,14 +65,14 @@ export default function ArcadePage() {
 
       {/* Active Session Card */}
       {currentSession && currentSession.isActive && (
-        <Card className="border-primary/50 bg-primary/5">
+        <Card className="border-primary/50 bg-primary/5 w-full">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Play className="h-5 w-5" />
-              Active Session
+              Your Progress
             </CardTitle>
             <CardDescription>
-              Resume your current arcade session
+              Click resume to continue your current learning session
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -107,14 +109,6 @@ export default function ArcadePage() {
                 <Play className="w-4 h-4 mr-2" />
                 Resume Session
               </Button>
-              {/* <Button 
-                onClick={handleStartNew} 
-                variant="outline"
-                disabled={createSession.isPending}
-              >
-                <RotateCcw className="w-4 h-4 mr-2" />
-                Start New
-              </Button> */}
             </div>
           </CardContent>
         </Card>
@@ -124,20 +118,32 @@ export default function ArcadePage() {
       <div className="grid md:grid-cols-3 gap-6">
         <Card>
           <CardHeader className="text-center">
-            <Target className="h-8 w-8 mx-auto text-primary mb-2" />
+            <Image
+              src="/coverage.webp"
+              alt="Complete Coverage"
+              width={80}
+              height={80}
+              className="mx-auto mb-2"
+            />
             <CardTitle className="text-lg">Complete Coverage</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground text-center">
-              All 1100 questions from 9 chapters. Each question appears exactly
-              once per session.
+              All 1100 questions from Encyclopedia of Counseling. Each question
+              appears only once.
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="text-center">
-            <Clock className="h-8 w-8 mx-auto text-primary mb-2" />
+            <Image
+              src="/timer.png"
+              alt="No Time Pressure"
+              width={80}
+              height={80}
+              className="mx-auto mb-2"
+            />
             <CardTitle className="text-lg">No Time Pressure</CardTitle>
           </CardHeader>
           <CardContent>
@@ -150,7 +156,13 @@ export default function ArcadePage() {
 
         <Card>
           <CardHeader className="text-center">
-            <Trophy className="h-8 w-8 mx-auto text-primary mb-2" />
+            <Image
+              src="/medal.webp"
+              alt="Immediate Feedback"
+              width={80}
+              height={80}
+              className="mx-auto mb-2"
+            />
             <CardTitle className="text-lg">Immediate Feedback</CardTitle>
           </CardHeader>
           <CardContent>
@@ -196,33 +208,6 @@ export default function ArcadePage() {
           </CardContent>
         </Card>
       )}
-
-      {/* Stats Summary */}
-      <div className="bg-muted/50 rounded-lg p-6">
-        <h3 className="font-semibold mb-4">What to Expect</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-          <div>
-            <div className="text-2xl font-bold text-primary">1100</div>
-            <div className="text-sm text-muted-foreground">Total Questions</div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-primary">9</div>
-            <div className="text-sm text-muted-foreground">
-              Chapters Covered
-            </div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-primary">∞</div>
-            <div className="text-sm text-muted-foreground">No Time Limit</div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-primary">✓</div>
-            <div className="text-sm text-muted-foreground">
-              Instant Feedback
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

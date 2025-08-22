@@ -24,6 +24,7 @@ import {
   useSubmitAnswer,
   useSessionDetails,
 } from "@/lib/hooks/use-arcade";
+import Image from "next/image";
 
 interface ArcadeQuestionPageProps {
   params: Promise<{ id: string }>;
@@ -66,7 +67,6 @@ export default function ArcadeQuestionPage({
     setSelectedAnswer(storeSelectedAnswer as "a" | "b" | "c" | "d" | null);
   }, [storeSelectedAnswer]);
 
-
   const handleAnswerSelect = (answer: "a" | "b" | "c" | "d") => {
     if (isSubmitted) return;
     setSelectedAnswer(answer);
@@ -93,7 +93,7 @@ export default function ArcadeQuestionPage({
     // Clear state but keep current question until new one loads
     nextQuestion();
     setSelectedAnswer(null);
-    
+
     // Fetch the next question - this will replace currentQuestion when successful
     refetch();
   };
@@ -178,19 +178,19 @@ export default function ArcadeQuestionPage({
         <div className="flex items-center gap-3">
           <Button onClick={handleBackToLanding} variant="ghost" size="sm">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Arcade
+            Back to Home
           </Button>
-          <div className="flex items-center gap-2">
-            <Gamepad2 className="h-5 w-5 text-primary" />
-            <h1 className="text-xl font-semibold">Arcade Mode</h1>
-          </div>
         </div>
-
-        {progress && (
-          <Badge variant="secondary" className="text-sm">
-            {progress.correctAnswers}/{progress.current - 1} correct
-          </Badge>
-        )}
+        <div className="flex items-center justify-center gap-1">
+          <Image
+            src="/book.webp"
+            alt="Book icon"
+            width={24}
+            height={24}
+            className="text-primary"
+          />
+          <p className="text-md font-bold">Claudipedia</p>
+        </div>
       </div>
 
       {/* Progress */}
@@ -202,16 +202,16 @@ export default function ArcadeQuestionPage({
                 <span className="font-medium">
                   Question {progress.current} of {progress.total}
                 </span>
-                <span className="text-muted-foreground">
+                {/* <span className="text-muted-foreground">
                   {Math.round(((progress.current - 1) / progress.total) * 100)}%
                   Complete
-                </span>
+                </span> */}
               </div>
               <Progress
                 value={((progress.current - 1) / progress.total) * 100}
                 className="h-2"
               />
-              <div className="flex items-center justify-between text-xs text-muted-foreground">
+              {/* <div className="flex items-center justify-between text-xs text-muted-foreground">
                 <span>{progress.correctAnswers} correct answers</span>
                 <span>
                   {progress.current > 1 &&
@@ -219,7 +219,7 @@ export default function ArcadeQuestionPage({
                       (progress.correctAnswers / (progress.current - 1)) * 100
                     )}% accuracy`}
                 </span>
-              </div>
+              </div> */}
             </div>
           </CardContent>
         </Card>
@@ -232,7 +232,10 @@ export default function ArcadeQuestionPage({
             <div className="flex items-start justify-between">
               <div className="space-y-2 flex-1">
                 <Badge variant="outline" className="text-xs">
-                  {currentQuestion.chapter.replace(/_/g, " ").toUpperCase()}
+                  {currentQuestion.chapter
+                    .replace(/_/g, " ")
+                    .replace(/^\d+\s*/, "")
+                    .toUpperCase()}
                 </Badge>
                 <CardTitle className="text-lg leading-relaxed">
                   {currentQuestion.question}
@@ -266,19 +269,15 @@ export default function ArcadeQuestionPage({
                         : ""
                     }`}
                   >
-                    <RadioGroupItem
-                      value={choice}
-                      id={choice}
-                      className="mt-1"
-                    />
-                    <Label htmlFor={choice} className="flex-1 cursor-pointer">
+                    <RadioGroupItem value={choice} id={choice} />
+                    <Label htmlFor={choice} className="flex-1 cursor-pointer ">
                       <span className="font-medium mr-2">
                         {choice.toUpperCase()}.
                       </span>
                       {choiceText}
                     </Label>
                     {showFeedback && isCorrectAnswer(choice) && (
-                      <CheckCircle className="h-5 w-5 text-green-600 mt-1 flex-shrink-0" />
+                      <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
                     )}
                     {showFeedback &&
                       isUserAnswer(choice) &&
@@ -320,7 +319,7 @@ export default function ArcadeQuestionPage({
                     )}
                     {lastFeedback.explanation && (
                       <AlertDescription className="text-sm">
-                        <BookOpen className="h-4 w-4 inline mr-2" />
+                        {/* <BookOpen className="h-4 w-4 inline mr-2" /> */}
                         {lastFeedback.explanation}
                       </AlertDescription>
                     )}
