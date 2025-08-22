@@ -38,12 +38,23 @@ export async function POST(request: Request) {
 
     if (poolError) {
       // Fallback to manual insert if RPC doesn't exist
-      const { data: questions } = await supabase
-        .from('questions')
-        .select('id')
+      // Split into two calls to bypass Supabase limits
+      const [{ data: questions1 }, { data: questions2 }] = await Promise.all([
+        supabase
+          .from('questions')
+          .select('id')
+          .range(0, 549), // First 550 questions (0-549)
+        supabase
+          .from('questions')
+          .select('id')
+          .range(550, 1099) // Last 550 questions (550-1099)
+      ])
       
-      if (questions) {
-        const shuffledQuestions = questions
+      // Combine both sets of questions
+      const allQuestions = [...(questions1 || []), ...(questions2 || [])]
+      
+      if (allQuestions.length > 0) {
+        const shuffledQuestions = allQuestions
           .map((q) => ({
             arcade_session_id: session.id,
             question_id: q.id,

@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { Dashboard } from "@/components/dashboard/dashboard";
 
 export default async function ProtectedPage() {
   const supabase = await createClient();
@@ -10,16 +9,6 @@ export default async function ProtectedPage() {
     redirect("/auth/login");
   }
 
-  return (
-    <div className="flex-1 w-full flex flex-col gap-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold">Board Exam Preparation</h1>
-        <p className="text-muted-foreground">
-          Track your progress and continue your study sessions
-        </p>
-      </div>
-      
-      <Dashboard />
-    </div>
-  );
+  // Redirect directly to arcade mode for MVP
+  redirect("/arcade");
 }

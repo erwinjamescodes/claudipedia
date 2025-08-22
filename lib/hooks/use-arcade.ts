@@ -168,7 +168,7 @@ export function useSubmitAnswer() {
 }
 
 export function useSessionDetails(sessionId: number | null) {
-  const { setCurrentSession } = useArcadeStore()
+  const { setCurrentSession, clearSession } = useArcadeStore()
   
   const query = useQuery({
     queryKey: ['arcade-session', sessionId],
@@ -177,12 +177,42 @@ export function useSessionDetails(sessionId: number | null) {
     refetchInterval: 30000, // Refresh every 30 seconds
   })
 
-  // Handle success effect
+  // Handle success/error effects
   useEffect(() => {
     if (query.data) {
       setCurrentSession(query.data)
     }
-  }, [query.data, setCurrentSession])
+    
+    // If session doesn't exist in DB, clear the local store
+    if (query.error && sessionId) {
+      console.log('Session not found in database, clearing local storage')
+      clearSession()
+    }
+  }, [query.data, query.error, sessionId, setCurrentSession, clearSession])
 
   return query
+}
+
+// Hook to validate persisted session on app startup
+export function useValidatePersistedSession() {
+  const { currentSession, clearSession } = useArcadeStore()
+  
+  useEffect(() => {
+    const validateSession = async () => {
+      if (!currentSession?.sessionId) return
+      
+      try {
+        const response = await fetch(`/api/arcade/sessions/${currentSession.sessionId}`)
+        if (!response.ok) {
+          console.log('Persisted session no longer exists in database, clearing local storage')
+          clearSession()
+        }
+      } catch (error) {
+        console.log('Failed to validate persisted session, clearing local storage')
+        clearSession()
+      }
+    }
+    
+    validateSession()
+  }, [currentSession?.sessionId, clearSession])
 }

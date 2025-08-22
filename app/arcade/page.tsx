@@ -7,13 +7,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Gamepad2, Play, RotateCcw, Trophy, Clock, Target } from 'lucide-react'
-import { useCreateArcadeSession } from '@/lib/hooks/use-arcade'
+import { useCreateArcadeSession, useValidatePersistedSession } from '@/lib/hooks/use-arcade'
 import { useArcadeStore } from '@/lib/stores/arcade-store'
 
 export default function ArcadePage() {
   const router = useRouter()
   const createSession = useCreateArcadeSession()
   const { currentSession, clearSession } = useArcadeStore()
+  
+  // Validate persisted session on component mount
+  useValidatePersistedSession()
 
   const handleStartArcade = async () => {
     try {
