@@ -14,7 +14,7 @@ export function useTimer() {
     getQuestionElapsedTime,
   } = useTimerStore()
 
-  const intervalRef = useRef<NodeJS.Timeout>()
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     if (isRunning) {

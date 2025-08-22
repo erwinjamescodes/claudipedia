@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 
-export async function POST(request: Request) {
+export async function POST() {
   try {
     const supabase = await createClient()
     
@@ -78,7 +78,7 @@ export async function POST(request: Request) {
       sessionId: session.id,
       totalQuestions: 1100
     })
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to create arcade session' },
       { status: 500 }
@@ -112,7 +112,7 @@ export async function GET(request: Request) {
     }
 
     return NextResponse.json(session)
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to fetch arcade session' },
       { status: 500 }

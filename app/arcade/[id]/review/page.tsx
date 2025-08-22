@@ -2,7 +2,7 @@
 
 import { use, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -144,7 +144,7 @@ export default function ArcadeReviewPage({ params }: ArcadeReviewPageProps) {
     queryFn: () =>
       fetchReviewData(sessionId, currentPage, questionsPerPage, filter),
     enabled: !isNaN(sessionId),
-    keepPreviousData: true,
+    placeholderData: keepPreviousData,
   });
 
   const handleBackToComplete = () => {

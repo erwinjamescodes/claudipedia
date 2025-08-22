@@ -48,7 +48,7 @@ export async function GET(
             )
           : 0,
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Failed to fetch session details" },
       { status: 500 }

@@ -93,7 +93,7 @@ export async function GET(
       },
       isComplete: false,
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Failed to fetch next question" },
       { status: 500 }

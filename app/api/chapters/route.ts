@@ -33,7 +33,7 @@ export async function GET() {
     )
 
     return NextResponse.json(chaptersWithCounts)
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to fetch chapters' }, 
       { status: 500 }

@@ -111,7 +111,7 @@ export async function POST(
       explanation: question.explanation,
       userAnswer: answer,
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Failed to submit answer" },
       { status: 500 }

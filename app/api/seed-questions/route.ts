@@ -136,7 +136,7 @@ export async function POST() {
       count: data?.length || 0,
       questions: data
     })
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to seed questions' }, 
       { status: 500 }
