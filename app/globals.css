@@ -94,23 +94,31 @@
     body {
       min-height: 100vh !important;
       height: 100vh !important;
-      overflow-y: auto;
+      overflow: hidden;
+      overscroll-behavior: none;
+      -webkit-overflow-scrolling: touch;
     }
     
     html {
       height: 100vh !important;
+      overflow: hidden;
+      overscroll-behavior: none;
     }
     
     .min-h-screen {
       min-height: 100vh !important;
       height: 100vh !important;
       overflow-y: auto;
+      overscroll-behavior: none;
+      -webkit-overflow-scrolling: touch;
     }
     
     /* Ensure content doesn't push beyond viewport */
     .max-w-4xl {
       max-height: calc(100vh - 2rem);
       overflow-y: auto;
+      overscroll-behavior: none;
+      -webkit-overflow-scrolling: touch;
     }
   }
 }
