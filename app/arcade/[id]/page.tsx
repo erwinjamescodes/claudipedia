@@ -23,6 +23,7 @@ import {
   useSubmitAnswer,
   useSessionDetails,
 } from "@/lib/hooks/use-arcade";
+import { CHAPTERS, ChapterKey } from "@/lib/constants";
 
 interface ArcadeQuestionPageProps {
   params: Promise<{ id: string }>;
@@ -37,6 +38,8 @@ export default function ArcadeQuestionPage({
   const [selectedAnswer, setSelectedAnswer] = useState<
     "a" | "b" | "c" | "d" | null
   >(null);
+  const [isLoadingNext, setIsLoadingNext] = useState(false);
+  const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
 
   const {
     currentQuestion,
@@ -72,6 +75,7 @@ export default function ArcadeQuestionPage({
   };
 
   const handleSubmitAnswer = async () => {
+    setIsLoadingSubmit(true);
     if (!selectedAnswer || !currentQuestion) {
       toast.error("Please select an answer");
       return;
@@ -84,16 +88,23 @@ export default function ArcadeQuestionPage({
       });
     } catch (error) {
       console.error("Failed to submit answer:", error);
+    } finally {
+      setIsLoadingSubmit(false);
     }
   };
 
-  const handleNextQuestion = () => {
-    // Clear state but keep current question until new one loads
-    nextQuestion();
-    setSelectedAnswer(null);
+  const handleNextQuestion = async () => {
+    setIsLoadingNext(true);
+    try {
+      // Clear state but keep current question until new one loads
+      nextQuestion();
+      setSelectedAnswer(null);
 
-    // Fetch the next question - this will replace currentQuestion when successful
-    refetch();
+      // Fetch the next question - this will replace currentQuestion when successful
+      await refetch();
+    } finally {
+      setIsLoadingNext(false);
+    }
   };
 
   const handleBackToLanding = () => {
@@ -220,7 +231,12 @@ export default function ArcadeQuestionPage({
           <CardHeader>
             <div className="flex items-start justify-between">
               <div className="space-y-4 flex-1">
-                <Badge className="text-xs lowercase">
+                <Badge
+                  className={`text-xs lowercase text-white ${
+                    CHAPTERS[currentQuestion.chapter as ChapterKey]?.color ||
+                    "bg-primary"
+                  }`}
+                >
                   {currentQuestion.chapter
                     .replace(/_/g, " ")
                     .replace(/^\d+\s*/, "")
@@ -326,17 +342,17 @@ export default function ArcadeQuestionPage({
 
             {/* Action Buttons */}
             <div className="flex gap-3">
-              {!isSubmitted ? (
+              {!(showFeedback && lastFeedback) ? (
                 <Button
                   onClick={handleSubmitAnswer}
-                  disabled={!selectedAnswer || submitAnswer.isPending}
+                  disabled={!selectedAnswer || isLoadingSubmit}
                   className="flex-1"
                   size="lg"
                 >
-                  {submitAnswer.isPending ? (
+                  {isLoadingSubmit || (isSubmitted && !lastFeedback) ? (
                     <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                      Submitting...
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Please wait...
                     </>
                   ) : (
                     "Submit Answer"
@@ -345,10 +361,18 @@ export default function ArcadeQuestionPage({
               ) : (
                 <Button
                   onClick={handleNextQuestion}
+                  disabled={isLoadingNext}
                   className="flex-1"
                   size="lg"
                 >
-                  Next Question
+                  {isLoadingNext ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Please wait...
+                    </>
+                  ) : (
+                    "Next Question"
+                  )}
                 </Button>
               )}
             </div>
