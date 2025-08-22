@@ -23,8 +23,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  LineChart,
-  Line,
   Cell,
 } from "recharts";
 import { CHAPTERS } from "@/lib/constants";
@@ -145,7 +143,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
     );
   }
 
-  const { session, chapterPerformance, progressOverTime } = analyticsData;
+  const { session, chapterPerformance } = analyticsData;
 
   // Prepare data for charts
   const chapterChartData = chapterPerformance.map((chapter) => ({

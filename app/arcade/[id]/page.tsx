@@ -14,7 +14,6 @@ import {
   XCircle,
   ArrowLeft,
   Loader2,
-  BarChart3,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useArcadeStore } from "@/lib/stores/arcade-store";
@@ -111,9 +110,6 @@ export default function ArcadeQuestionPage({
     router.push("/arcade");
   };
 
-  const handleViewAnalytics = () => {
-    router.push(`/arcade/${sessionId}/analytics`);
-  };
 
   if (isLoading && !currentQuestion) {
     return (
