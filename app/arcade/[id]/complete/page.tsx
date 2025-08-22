@@ -14,7 +14,8 @@ import {
   Home,
   Gamepad2,
   CheckCircle,
-  XCircle
+  XCircle,
+  BookOpen
 } from 'lucide-react'
 import { useSessionDetails } from '@/lib/hooks/use-arcade'
 import { useArcadeStore } from '@/lib/stores/arcade-store'
@@ -49,6 +50,10 @@ export default function ArcadeCompletePage({ params }: ArcadeCompletePageProps) 
 
   const handleBackToDashboard = () => {
     router.push('/protected')
+  }
+
+  const handleReviewAnswers = () => {
+    router.push(`/arcade/${sessionId}/review`)
   }
 
   if (isLoading) {
@@ -254,6 +259,16 @@ export default function ArcadeCompletePage({ params }: ArcadeCompletePageProps) 
       <Card>
         <CardContent className="pt-6">
           <div className="flex flex-col sm:flex-row gap-4">
+            <Button
+              onClick={handleReviewAnswers}
+              variant="outline"
+              className="flex-1"
+              size="lg"
+            >
+              <BookOpen className="w-4 h-4 mr-2" />
+              Review Answers
+            </Button>
+
             <Button
               onClick={handleStartNewSession}
               className="flex-1"
