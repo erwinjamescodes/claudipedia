@@ -97,7 +97,7 @@ export default function ArcadeQuestionPage({
 
   if (isLoading && !currentQuestion) {
     return (
-      <div className="container max-w-4xl mx-auto p-6">
+      <div className="max-w-4xl mx-auto p-6">
         <div className="text-center space-y-4">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
           <p className="text-muted-foreground">Loading your next question...</p>
@@ -108,7 +108,7 @@ export default function ArcadeQuestionPage({
 
   if (!currentQuestion && !isLoading) {
     return (
-      <div className="container max-w-4xl mx-auto p-6">
+      <div className="max-w-4xl mx-auto p-6">
         <Card>
           <CardContent className="pt-6 text-center space-y-4">
             <XCircle className="h-12 w-12 text-destructive mx-auto" />
@@ -120,7 +120,7 @@ export default function ArcadeQuestionPage({
             </div>
             <Button onClick={handleBackToLanding}>
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Arcade
+              Back to Home
             </Button>
           </CardContent>
         </Card>
@@ -165,30 +165,28 @@ export default function ArcadeQuestionPage({
   };
 
   return (
-    <div className="container max-w-4xl mx-auto p-6 space-y-6">
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Button onClick={handleBackToLanding} variant="ghost" size="sm">
+      <div className="flex items-center justify-between mt-8 ">
+        <div className="flex items-center gap-3 ">
+          <Button
+            onClick={handleBackToLanding}
+            variant="ghost"
+            size="sm"
+            className="hover:bg-transparent active:bg-transparent"
+          >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
           </Button>
         </div>
         <div className="flex items-center justify-center gap-1">
-          <Image
-            src="/book.webp"
-            alt="Book icon"
-            width={24}
-            height={24}
-            className="text-primary"
-          />
-          <p className="text-md font-bold">Claudipedia</p>
+          <p className="text-md font-bold font-serif italic">Claudipedia</p>
         </div>
       </div>
 
       {/* Progress */}
       {progress && (
-        <Card>
+        <Card className="border-primary/50">
           <CardContent className="pt-4">
             <div className="space-y-3">
               <div className="flex items-center justify-between text-sm">
@@ -207,11 +205,11 @@ export default function ArcadeQuestionPage({
 
       {/* Question */}
       {currentQuestion && (
-        <Card>
+        <Card className="border-primary/50 w-full">
           <CardHeader>
             <div className="flex items-start justify-between">
-              <div className="space-y-2 flex-1">
-                <Badge variant="outline" className="text-xs">
+              <div className="space-y-4 flex-1">
+                <Badge className="text-xs lowercase">
                   {currentQuestion.chapter
                     .replace(/_/g, " ")
                     .replace(/^\d+\s*/, "")
@@ -249,8 +247,15 @@ export default function ArcadeQuestionPage({
                         : ""
                     }`}
                   >
-                    <RadioGroupItem value={choice} id={choice} />
-                    <Label htmlFor={choice} className="flex-1 cursor-pointer ">
+                    <RadioGroupItem
+                      value={choice}
+                      id={choice}
+                      className="mt-[4px]"
+                    />
+                    <Label
+                      htmlFor={choice}
+                      className="flex-1 cursor-pointer font-normal tracking-wide text-md"
+                    >
                       <span className="font-medium mr-2">
                         {choice.toUpperCase()}.
                       </span>
@@ -298,7 +303,7 @@ export default function ArcadeQuestionPage({
                       </div>
                     )}
                     {lastFeedback.explanation && (
-                      <AlertDescription className="text-sm">
+                      <AlertDescription className="text-md">
                         {/* <BookOpen className="h-4 w-4 inline mr-2" /> */}
                         {lastFeedback.explanation}
                       </AlertDescription>

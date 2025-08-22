@@ -12,8 +12,9 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Board Exam Preparation App",
-  description: "Comprehensive study tool for board exam preparation with progress tracking and analytics",
+  title: "Claudipedia",
+  description:
+    "Comprehensive study tool for the Guidance Counselor Licensure Exam - board exam preparation with progress tracking and analytics",
 };
 
 const geistSans = Geist({

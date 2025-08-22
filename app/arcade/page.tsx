@@ -44,18 +44,13 @@ export default function ArcadePage() {
   };
 
   return (
-    <div className="flex flex-col max-w-4xl mx-auto p-6 gap-8 h-screen ">
+    <div className="flex flex-col max-w-4xl mx-auto p-6 gap-8 min-h-screen ">
       {/* Header */}
       <div className="text-center space-y-4">
         <div className="flex items-center justify-center gap-3 mt-20">
-          <Image
-            src="/book.webp"
-            alt="Book icon"
-            width={40}
-            height={40}
-            className="text-primary"
-          />
-          <p className="text-4xl font-bold">Claudipedia</p>
+          <h1 className="text-5xl font-extrabold font-serif italic text-primary">
+            Claudipedia
+          </h1>
         </div>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           Master all 1100 counseling questions in a simplified, game-like
@@ -66,35 +61,38 @@ export default function ArcadePage() {
       {/* Active Session Card */}
       {currentSession && currentSession.isActive && (
         <Card className="border-primary/50 bg-primary/5 w-full">
-          <CardHeader>
+          <CardHeader className="flex justify-between">
             <CardTitle className="flex items-center gap-2">
-              <Play className="h-5 w-5" />
+              <Play className="h-5 w-5" fill="black" />
               Your Progress
             </CardTitle>
             <CardDescription>
               Click resume to continue your current learning session
-            </CardDescription>
+            </CardDescription>{" "}
           </CardHeader>
+
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
-              <div className="space-y-1">
+              <div className="flex gap-2 items-center">
                 <p className="font-medium">
                   Question {currentSession.questionsCompleted + 1} of{" "}
                   {currentSession.totalQuestions}
                 </p>
-                <p className="text-sm text-muted-foreground">
-                  {currentSession.correctAnswers} correct •{" "}
-                  {currentSession.accuracy}% accuracy
-                </p>
+                <div className="text-sm text-muted-foreground">
+                  (
+                  {Math.round(
+                    (currentSession.questionsCompleted /
+                      currentSession.totalQuestions) *
+                      100
+                  )}
+                  % Complete)
+                </div>{" "}
               </div>
-              <Badge variant="secondary">
-                {Math.round(
-                  (currentSession.questionsCompleted /
-                    currentSession.totalQuestions) *
-                    100
-                )}
-                % Complete
-              </Badge>
+              <div className="flex flex-row gap-2">
+                <div className="text-sm text-muted-foreground">
+                  {currentSession.accuracy}% accuracy
+                </div>
+              </div>
             </div>
             <Progress
               value={
@@ -116,7 +114,7 @@ export default function ArcadePage() {
 
       {/* Features Grid */}
       <div className="grid md:grid-cols-3 gap-6">
-        <Card>
+        <Card className="border-primary/50 w-full">
           <CardHeader className="text-center">
             <Image
               src="/coverage.webp"
@@ -135,7 +133,7 @@ export default function ArcadePage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-primary/50 w-full">
           <CardHeader className="text-center">
             <Image
               src="/timer.png"
@@ -154,7 +152,7 @@ export default function ArcadePage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-primary/50 w-full">
           <CardHeader className="text-center">
             <Image
               src="/medal.webp"
