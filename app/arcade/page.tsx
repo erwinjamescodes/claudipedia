@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Play, RotateCcw } from "lucide-react";
+import { Play } from "lucide-react";
 import {
   useCreateArcadeSession,
   useValidatePersistedSession,
@@ -23,7 +23,7 @@ import { useArcadeStore } from "@/lib/stores/arcade-store";
 export default function ArcadePage() {
   const router = useRouter();
   const createSession = useCreateArcadeSession();
-  const { currentSession, clearSession } = useArcadeStore();
+  const { currentSession } = useArcadeStore();
 
   // Validate persisted session on component mount
   useValidatePersistedSession();

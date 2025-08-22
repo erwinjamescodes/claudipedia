@@ -113,7 +113,7 @@ export default function ArcadeCompletePage({ params }: ArcadeCompletePageProps) 
         <div>
           <h1 className="text-4xl font-bold">Congratulations!</h1>
           <p className="text-xl text-muted-foreground mt-2">
-            You've completed the Arcade Mode
+            You&apos;ve completed the Arcade Mode
           </p>
         </div>
       </div>

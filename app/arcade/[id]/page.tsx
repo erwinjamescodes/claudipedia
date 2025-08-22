@@ -8,15 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  ChevronRight,
-  CheckCircle,
-  XCircle,
-  BookOpen,
-  ArrowLeft,
-  Gamepad2,
-} from "lucide-react";
+import { AlertDescription } from "@/components/ui/alert";
+import { CheckCircle, XCircle, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { useArcadeStore } from "@/lib/stores/arcade-store";
 import {
@@ -202,24 +195,11 @@ export default function ArcadeQuestionPage({
                 <span className="font-medium">
                   Question {progress.current} of {progress.total}
                 </span>
-                {/* <span className="text-muted-foreground">
-                  {Math.round(((progress.current - 1) / progress.total) * 100)}%
-                  Complete
-                </span> */}
               </div>
               <Progress
                 value={((progress.current - 1) / progress.total) * 100}
                 className="h-2"
               />
-              {/* <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <span>{progress.correctAnswers} correct answers</span>
-                <span>
-                  {progress.current > 1 &&
-                    `${Math.round(
-                      (progress.correctAnswers / (progress.current - 1)) * 100
-                    )}% accuracy`}
-                </span>
-              </div> */}
             </div>
           </CardContent>
         </Card>
@@ -352,7 +332,6 @@ export default function ArcadeQuestionPage({
                   className="flex-1"
                   size="lg"
                 >
-                  <ChevronRight className="w-4 h-4 mr-2" />
                   Next Question
                 </Button>
               )}
