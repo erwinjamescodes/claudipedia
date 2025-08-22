@@ -9,7 +9,13 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { AlertDescription } from "@/components/ui/alert";
-import { CheckCircle, XCircle, ArrowLeft, Loader2 } from "lucide-react";
+import {
+  CheckCircle,
+  XCircle,
+  ArrowLeft,
+  Loader2,
+  BarChart3,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useArcadeStore } from "@/lib/stores/arcade-store";
 import {
@@ -92,6 +98,10 @@ export default function ArcadeQuestionPage({
 
   const handleBackToLanding = () => {
     router.push("/arcade");
+  };
+
+  const handleViewAnalytics = () => {
+    router.push(`/arcade/${sessionId}/analytics`);
   };
 
   if (isLoading && !currentQuestion) {
@@ -178,8 +188,10 @@ export default function ArcadeQuestionPage({
             Back to Home
           </Button>
         </div>
-        <div className="flex items-center justify-center gap-1">
-          <p className="text-md font-bold font-serif italic">Claudipedia</p>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center justify-center gap-1">
+            <p className="text-md font-bold font-serif italic">Claudipedia</p>
+          </div>
         </div>
       </div>
 

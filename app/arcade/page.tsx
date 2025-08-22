@@ -66,6 +66,12 @@ export default function ArcadePage() {
     }
   };
 
+  const handleViewAnalytics = () => {
+    if (currentSession) {
+      router.push(`/arcade/${currentSession.sessionId}/analytics`);
+    }
+  };
+
   // Show loading state while fetching active session
   if (activeSessionQuery.isLoading) {
     return (
@@ -153,7 +159,6 @@ export default function ArcadePage() {
         <Card className="border-primary/50 bg-primary/5 w-full">
           <CardHeader className="flex justify-between">
             <CardTitle className="flex items-center gap-2">
-              <Play className="h-5 w-5" fill="black" />
               Your Progress
             </CardTitle>
             <CardDescription>
@@ -197,13 +202,23 @@ export default function ArcadePage() {
                 <Play className="w-4 h-4 mr-2" />
                 Resume Session
               </Button>
+            </div>
+            <div className="flex gap-3">
               <Button
                 onClick={handleReviewAnswers}
                 variant="outline"
-                className="flex-1 bg-transparent"
+                className="flex-1 bg-primary/10"
               >
                 <BookOpen className="w-4 h-4 mr-2" />
                 Review Answers
+              </Button>
+              <Button
+                onClick={handleViewAnalytics}
+                variant="outline"
+                className="flex-1 bg-primary/10"
+              >
+                <Play className="w-4 h-4 mr-2" />
+                View Analytics
               </Button>
             </div>
           </CardContent>
@@ -276,7 +291,9 @@ export default function ArcadePage() {
           <CardContent className="pt-6">
             <div className="text-center space-y-6">
               <div className="space-y-2">
-                <h2 className="text-2xl font-semibold">Ready to Start?</h2>
+                <h2 className="text-2xl font-semibold font-serif italic">
+                  Ready to Start?
+                </h2>
                 <p className="text-muted-foreground">
                   Begin your journey through all 1100 counseling exam questions
                 </p>
@@ -296,7 +313,7 @@ export default function ArcadePage() {
                 ) : (
                   <>
                     <Play className="w-6 h-6 mr-2" />
-                    Start Arcade Mode
+                    Start Study Session
                   </>
                 )}
               </Button>
