@@ -1,7 +1,7 @@
 "use client";
 
-import { use, useState } from "react";
-import { useRouter } from "next/navigation";
+import { use, useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,12 +13,11 @@ import {
   CheckCircle,
   XCircle,
   ArrowLeft,
-  Clock,
-  BookOpen,
-  Filter,
   RotateCcw,
   ChevronDown,
   ChevronUp,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import {
   Select,
@@ -48,14 +47,34 @@ interface ReviewData {
   sessionId: number;
   questions: ReviewQuestion[];
   totalQuestions: number;
+  currentPage: number;
+  totalPages: number;
+  questionsPerPage: number;
+  filter: string;
+  allCount: number;
+  correctCount: number;
+  incorrectCount: number;
 }
 
 interface ArcadeReviewPageProps {
   params: Promise<{ id: string }>;
 }
 
-async function fetchReviewData(sessionId: number): Promise<ReviewData> {
-  const response = await fetch(`/api/arcade/sessions/${sessionId}/review`);
+async function fetchReviewData(
+  sessionId: number,
+  page: number,
+  limit: number,
+  filter: string
+): Promise<ReviewData> {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    filter,
+  });
+  
+  const response = await fetch(
+    `/api/arcade/sessions/${sessionId}/review?${params}`
+  );
 
   if (!response.ok) {
     throw new Error("Failed to fetch review data");
@@ -66,22 +85,57 @@ async function fetchReviewData(sessionId: number): Promise<ReviewData> {
 
 export default function ArcadeReviewPage({ params }: ArcadeReviewPageProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { id } = use(params);
   const sessionId = parseInt(id);
 
-  const [filter, setFilter] = useState<"all" | "correct" | "incorrect">("all");
+  // Initialize state from URL params
+  const [filter, setFilter] = useState<"all" | "correct" | "incorrect">(
+    (searchParams.get('filter') as "all" | "correct" | "incorrect") || "all"
+  );
   const [expandedQuestions, setExpandedQuestions] = useState<Set<number>>(
     new Set()
   );
+  const [currentPage, setCurrentPage] = useState(
+    parseInt(searchParams.get('page') || '1')
+  );
+  const questionsPerPage = 10;
+
+  // Function to update URL with current state
+  const updateURL = (page: number, filterValue: string) => {
+    const params = new URLSearchParams();
+    if (page > 1) params.set('page', page.toString());
+    if (filterValue !== 'all') params.set('filter', filterValue);
+    
+    const newURL = params.toString() 
+      ? `/arcade/${id}/review?${params.toString()}`
+      : `/arcade/${id}/review`;
+    
+    router.replace(newURL, { scroll: false });
+  };
+
+  // Sync URL params with state changes
+  useEffect(() => {
+    const urlPage = parseInt(searchParams.get('page') || '1');
+    const urlFilter = (searchParams.get('filter') as "all" | "correct" | "incorrect") || "all";
+    
+    if (urlPage !== currentPage) {
+      setCurrentPage(urlPage);
+    }
+    if (urlFilter !== filter) {
+      setFilter(urlFilter);
+    }
+  }, [searchParams, currentPage, filter]);
 
   const {
     data: reviewData,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["arcade-review", sessionId],
-    queryFn: () => fetchReviewData(sessionId),
+    queryKey: ["arcade-review", sessionId, currentPage, questionsPerPage, filter],
+    queryFn: () => fetchReviewData(sessionId, currentPage, questionsPerPage, filter),
     enabled: !isNaN(sessionId),
+    keepPreviousData: true,
   });
 
   const handleBackToComplete = () => {
@@ -148,17 +202,38 @@ export default function ArcadeReviewPage({ params }: ArcadeReviewPageProps) {
     );
   }
 
-  // Filter questions based on selected filter
-  const filteredQuestions = reviewData.questions.filter((question) => {
-    if (filter === "correct") return question.is_correct;
-    if (filter === "incorrect") return !question.is_correct;
-    return true;
-  });
+  // Reset to page 1 when filter changes
+  const handleFilterChange = (value: "all" | "correct" | "incorrect") => {
+    setFilter(value);
+    setCurrentPage(1);
+    updateURL(1, value);
+  };
 
-  const correctCount = reviewData.questions.filter((q) => q.is_correct).length;
-  const accuracy = Math.round(
-    (correctCount / reviewData.questions.length) * 100
-  );
+  const goToNextPage = () => {
+    if (reviewData && currentPage < reviewData.totalPages) {
+      const newPage = currentPage + 1;
+      setCurrentPage(newPage);
+      updateURL(newPage, filter);
+    }
+  };
+
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      const newPage = currentPage - 1;
+      setCurrentPage(newPage);
+      updateURL(newPage, filter);
+    }
+  };
+  
+  // Get data from server response
+  const totalPages = reviewData?.totalPages || 0;
+  const startIndex = reviewData ? (reviewData.currentPage - 1) * reviewData.questionsPerPage : 0;
+  const endIndex = reviewData ? Math.min(startIndex + reviewData.questionsPerPage, reviewData.totalQuestions) : 0;
+
+  // Use counts from API response
+  const allCount = reviewData?.allCount || 0;
+  const correctCount = reviewData?.correctCount || 0;
+  const incorrectCount = reviewData?.incorrectCount || 0;
 
   const getChoiceText = (
     question: ReviewQuestion,
@@ -176,10 +251,6 @@ export default function ArcadeReviewPage({ params }: ArcadeReviewPageProps) {
     }
   };
 
-  const formatTime = (seconds: number) => {
-    if (seconds < 60) return `${seconds}s`;
-    return `${Math.floor(seconds / 60)}m ${seconds % 60}s`;
-  };
 
   const toggleQuestionExpand = (questionId: number) => {
     const newExpanded = new Set(expandedQuestions);
@@ -218,7 +289,7 @@ export default function ArcadeReviewPage({ params }: ArcadeReviewPageProps) {
           <Select
             value={filter}
             onValueChange={(value) =>
-              setFilter(value as "all" | "correct" | "incorrect")
+              handleFilterChange(value as "all" | "correct" | "incorrect")
             }
           >
             <SelectTrigger className="w-48">
@@ -226,35 +297,47 @@ export default function ArcadeReviewPage({ params }: ArcadeReviewPageProps) {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">
-                All Questions ({reviewData.totalQuestions})
+                All Questions ({allCount})
               </SelectItem>
               <SelectItem value="correct">
                 Correct Only ({correctCount})
               </SelectItem>
               <SelectItem value="incorrect">
-                Incorrect Only ({reviewData.totalQuestions - correctCount})
+                Incorrect Only ({incorrectCount})
               </SelectItem>
             </SelectContent>
           </Select>
         </div>
+        
+        {/* Pagination Info */}
+        {reviewData && reviewData.questions.length > 0 && (
+          <div className="text-sm text-muted-foreground">
+            Showing {startIndex + 1}-{endIndex} of {reviewData.totalQuestions} questions
+            {totalPages > 1 && (
+              <span className="ml-2">
+                (Page {reviewData.currentPage} of {reviewData.totalPages})
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Questions List */}
       <div className="space-y-6">
-        {filteredQuestions.length === 0 ? (
+        {!reviewData || reviewData.questions.length === 0 ? (
           <Card>
             <CardContent className="pt-6 text-center space-y-4">
               <div className="text-muted-foreground">
                 No questions match the current filter.
               </div>
-              <Button onClick={() => setFilter("all")} variant="outline">
+              <Button onClick={() => handleFilterChange("all")} variant="outline">
                 <RotateCcw className="w-4 h-4 mr-2" />
                 Show All Questions
               </Button>
             </CardContent>
           </Card>
         ) : (
-          filteredQuestions.map((question, index) => {
+          reviewData.questions.map((question) => {
             const isExpanded = expandedQuestions.has(question.id);
 
             return (
@@ -406,6 +489,35 @@ export default function ArcadeReviewPage({ params }: ArcadeReviewPageProps) {
           })
         )}
       </div>
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-4 mt-8">
+          <Button
+            onClick={goToPreviousPage}
+            disabled={currentPage === 1}
+            variant="outline"
+            size="sm"
+          >
+            <ChevronLeft className="w-4 h-4 mr-1" />
+            Previous
+          </Button>
+          
+          <div className="text-sm text-muted-foreground">
+            Page {reviewData?.currentPage || currentPage} of {reviewData?.totalPages || totalPages}
+          </div>
+          
+          <Button
+            onClick={goToNextPage}
+            disabled={reviewData ? currentPage === reviewData.totalPages : true}
+            variant="outline"
+            size="sm"
+          >
+            Next
+            <ChevronRight className="w-4 h-4 ml-1" />
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
