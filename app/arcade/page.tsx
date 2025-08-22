@@ -12,7 +12,19 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Loader2, Play, BookOpen } from "lucide-react";
+import { Loader2, Play, BookOpen, LogOut } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { createClient } from "@/lib/supabase/client";
 import {
   useCreateArcadeSession,
   useActiveSession,
@@ -26,6 +38,12 @@ export default function ArcadePage() {
 
   // Fetch active session from API
   const activeSessionQuery = useActiveSession();
+
+  const handleLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/auth/login");
+  };
 
   const handleStartArcade = async () => {
     try {
@@ -53,10 +71,32 @@ export default function ArcadePage() {
     return (
       <div className="flex flex-col max-w-4xl mx-auto p-6 gap-8 min-h-screen">
         <div className="text-center space-y-4">
-          <div className="flex items-center justify-center gap-3 mt-20">
+          <div className="flex items-center justify-between mt-20">
+            <div></div> {/* Empty div for balance */}
             <h1 className="text-5xl font-extrabold font-serif italic text-primary">
               Claudipedia
             </h1>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-10 w-10">
+                  <LogOut className="h-5 w-5" />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Confirm Logout</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to log out?
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleLogout}>
+                    Yes, Log Out
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Loading your session...
@@ -74,10 +114,33 @@ export default function ArcadePage() {
     <div className="flex flex-col max-w-4xl mx-auto p-6 gap-8 min-h-screen ">
       {/* Header */}
       <div className="text-center space-y-4">
-        <div className="flex items-center justify-center gap-3 mt-20">
+        <div className="flex items-start justify-between mt-20">
+          <div></div> {/* Empty div for balance */}
           <h1 className="text-5xl font-extrabold font-serif italic text-primary">
             Claudipedia
           </h1>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-10 w-10">
+                <LogOut className="h-5 w-5" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Confirm Logout</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to log out? You will be redirected to
+                  the login page.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleLogout}>
+                  Yes, Log Out
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           Master all 1100 counseling questions in a simplified, game-like

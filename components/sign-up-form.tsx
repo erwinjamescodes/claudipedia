@@ -58,6 +58,12 @@ export function SignUpForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
+      {/* Claudipedia Logo */}
+      <div className="text-center mb-2">
+        <h1 className="text-4xl font-extrabold font-serif italic text-primary">
+          Claudipedia
+        </h1>
+      </div>
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">Sign up</CardTitle>
