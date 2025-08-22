@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useArcadeStore } from "@/lib/stores/arcade-store";
 import { toast } from "sonner";
+import { createClient } from "@/lib/supabase/client";
 
 // API Functions
 async function createArcadeSession() {
@@ -57,6 +58,16 @@ async function getSessionDetails(sessionId: number) {
 
   if (!response.ok) {
     throw new Error("Failed to fetch session details");
+  }
+
+  return response.json();
+}
+
+async function getActiveSession(userId: string) {
+  const response = await fetch(`/api/arcade/sessions?userId=${userId}`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch active session");
   }
 
   return response.json();
@@ -208,32 +219,46 @@ export function useSessionDetails(sessionId: number | null) {
   return query;
 }
 
-// Hook to validate persisted session on app startup
-export function useValidatePersistedSession() {
-  const { currentSession, clearSession } = useArcadeStore();
+// Hook to fetch active session from API
+export function useActiveSession() {
+  const { setCurrentSession, clearSession } = useArcadeStore();
+  const supabase = createClient();
 
+  const query = useQuery({
+    queryKey: ["active-session"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("User not authenticated");
+      
+      return getActiveSession(user.id);
+    },
+    retry: false,
+    staleTime: 30000, // Consider data fresh for 30 seconds
+  });
+
+  // Update store with active session data
   useEffect(() => {
-    const validateSession = async () => {
-      if (!currentSession?.sessionId) return;
+    if (query.data && query.data.id) {
+      // Transform the database response to match the store interface
+      const sessionData = {
+        sessionId: query.data.id,
+        questionsCompleted: query.data.questions_completed,
+        correctAnswers: query.data.correct_answers,
+        totalQuestions: query.data.total_questions,
+        isActive: query.data.is_active,
+        startedAt: query.data.started_at,
+        completedAt: query.data.completed_at,
+        totalTimeSeconds: query.data.total_time_seconds,
+        accuracy: query.data.questions_completed > 0 
+          ? Math.round((query.data.correct_answers / query.data.questions_completed) * 100) 
+          : 0
+      };
+      setCurrentSession(sessionData);
+    } else if (query.data === null) {
+      // No active session found
+      clearSession();
+    }
+  }, [query.data, setCurrentSession, clearSession]);
 
-      try {
-        const response = await fetch(
-          `/api/arcade/sessions/${currentSession.sessionId}`
-        );
-        if (!response.ok) {
-          console.log(
-            "Persisted session no longer exists in database, clearing local storage"
-          );
-          clearSession();
-        }
-      } catch (error) {
-        console.log(
-          "Failed to validate persisted session, clearing local storage"
-        );
-        clearSession();
-      }
-    };
-
-    validateSession();
-  }, [currentSession?.sessionId, clearSession]);
+  return query;
 }

@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 
 interface Question {
   id: number
@@ -78,80 +77,68 @@ interface ArcadeState {
   clearSession: () => void
 }
 
-export const useArcadeStore = create<ArcadeState>()(
-  persist(
-    (set, get) => ({
-      // Initial State
+export const useArcadeStore = create<ArcadeState>()((set) => ({
+  // Initial State
+  currentSession: null,
+  isSessionLoading: false,
+  currentQuestion: null,
+  selectedAnswer: null,
+  isQuestionLoading: false,
+  showFeedback: false,
+  isSubmitted: false,
+  progress: null,
+  lastFeedback: null,
+
+  // Basic Actions
+  setCurrentSession: (session) => set({ currentSession: session }),
+  setSessionLoading: (loading) => set({ isSessionLoading: loading }),
+  setCurrentQuestion: (question) => set({ currentQuestion: question }),
+  setSelectedAnswer: (answer) => set({ selectedAnswer: answer }),
+  setQuestionLoading: (loading) => set({ isQuestionLoading: loading }),
+  setShowFeedback: (show) => set({ showFeedback: show }),
+  setIsSubmitted: (submitted) => set({ isSubmitted: submitted }),
+  setProgress: (progress) => set({ progress }),
+  setLastFeedback: (feedback) => set({ lastFeedback: feedback }),
+
+  // Complex Actions
+  submitAnswer: (answer) => {
+    set({
+      selectedAnswer: answer,
+      isSubmitted: true,
+      showFeedback: true
+    })
+  },
+
+  nextQuestion: () => {
+    set({
+      selectedAnswer: null,
+      showFeedback: false,
+      isSubmitted: false,
+      lastFeedback: null
+      // Don't clear currentQuestion - let new question replace it
+    })
+  },
+
+  resetQuestion: () => {
+    set({
+      selectedAnswer: null,
+      showFeedback: false,
+      isSubmitted: false,
+      lastFeedback: null
+    })
+  },
+
+  clearSession: () => {
+    set({
       currentSession: null,
-      isSessionLoading: false,
       currentQuestion: null,
       selectedAnswer: null,
       isQuestionLoading: false,
+      isSessionLoading: false,
       showFeedback: false,
       isSubmitted: false,
       progress: null,
-      lastFeedback: null,
-
-      // Basic Actions
-      setCurrentSession: (session) => set({ currentSession: session }),
-      setSessionLoading: (loading) => set({ isSessionLoading: loading }),
-      setCurrentQuestion: (question) => set({ currentQuestion: question }),
-      setSelectedAnswer: (answer) => set({ selectedAnswer: answer }),
-      setQuestionLoading: (loading) => set({ isQuestionLoading: loading }),
-      setShowFeedback: (show) => set({ showFeedback: show }),
-      setIsSubmitted: (submitted) => set({ isSubmitted: submitted }),
-      setProgress: (progress) => set({ progress }),
-      setLastFeedback: (feedback) => set({ lastFeedback: feedback }),
-
-      // Complex Actions
-      submitAnswer: (answer) => {
-        set({
-          selectedAnswer: answer,
-          isSubmitted: true,
-          showFeedback: true
-        })
-      },
-
-      nextQuestion: () => {
-        set({
-          selectedAnswer: null,
-          showFeedback: false,
-          isSubmitted: false,
-          lastFeedback: null
-          // Don't clear currentQuestion - let new question replace it
-        })
-      },
-
-      resetQuestion: () => {
-        set({
-          selectedAnswer: null,
-          showFeedback: false,
-          isSubmitted: false,
-          lastFeedback: null
-        })
-      },
-
-      clearSession: () => {
-        set({
-          currentSession: null,
-          currentQuestion: null,
-          selectedAnswer: null,
-          isQuestionLoading: false,
-          isSessionLoading: false,
-          showFeedback: false,
-          isSubmitted: false,
-          progress: null,
-          lastFeedback: null
-        })
-      }
-    }),
-    {
-      name: 'arcade-store',
-      partialize: (state) => ({
-        currentSession: state.currentSession,
-        progress: state.progress,
-        // Don't persist current question state to allow fresh start
-      })
-    }
-  )
-)
+      lastFeedback: null
+    })
+  }
+}))

@@ -11,12 +11,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Play } from "lucide-react";
+import { Loader2, Play, BookOpen } from "lucide-react";
 import {
   useCreateArcadeSession,
-  useValidatePersistedSession,
+  useActiveSession,
 } from "@/lib/hooks/use-arcade";
 import { useArcadeStore } from "@/lib/stores/arcade-store";
 
@@ -25,8 +24,8 @@ export default function ArcadePage() {
   const createSession = useCreateArcadeSession();
   const { currentSession } = useArcadeStore();
 
-  // Validate persisted session on component mount
-  useValidatePersistedSession();
+  // Fetch active session from API
+  const activeSessionQuery = useActiveSession();
 
   const handleStartArcade = async () => {
     try {
@@ -42,6 +41,34 @@ export default function ArcadePage() {
       router.push(`/arcade/${currentSession.sessionId}`);
     }
   };
+
+  const handleReviewAnswers = () => {
+    if (currentSession) {
+      router.push(`/arcade/${currentSession.sessionId}/review`);
+    }
+  };
+
+  // Show loading state while fetching active session
+  if (activeSessionQuery.isLoading) {
+    return (
+      <div className="flex flex-col max-w-4xl mx-auto p-6 gap-8 min-h-screen">
+        <div className="text-center space-y-4">
+          <div className="flex items-center justify-center gap-3 mt-20">
+            <h1 className="text-5xl font-extrabold font-serif italic text-primary">
+              Claudipedia
+            </h1>
+          </div>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Loading your session...
+          </p>
+        </div>
+        <div className="flex justify-center">
+          {/* <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /> */}
+          <Loader2 className="h-12 w-12 text-primary mx-auto animate-spin" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col max-w-4xl mx-auto p-6 gap-8 min-h-screen ">
@@ -106,6 +133,14 @@ export default function ArcadePage() {
               <Button onClick={handleResumeSession} className="flex-1">
                 <Play className="w-4 h-4 mr-2" />
                 Resume Session
+              </Button>
+              <Button
+                onClick={handleReviewAnswers}
+                variant="outline"
+                className="flex-1 bg-transparent"
+              >
+                <BookOpen className="w-4 h-4 mr-2" />
+                Review Answers
               </Button>
             </div>
           </CardContent>
@@ -174,7 +209,7 @@ export default function ArcadePage() {
 
       {/* Start Button */}
       {(!currentSession || !currentSession.isActive) && (
-        <Card>
+        <Card className="border-primary/50 w-full">
           <CardContent className="pt-6">
             <div className="text-center space-y-6">
               <div className="space-y-2">

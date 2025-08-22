@@ -9,7 +9,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { AlertDescription } from "@/components/ui/alert";
-import { CheckCircle, XCircle, ArrowLeft } from "lucide-react";
+import { CheckCircle, XCircle, ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useArcadeStore } from "@/lib/stores/arcade-store";
 import {
@@ -17,7 +17,6 @@ import {
   useSubmitAnswer,
   useSessionDetails,
 } from "@/lib/hooks/use-arcade";
-import Image from "next/image";
 
 interface ArcadeQuestionPageProps {
   params: Promise<{ id: string }>;
@@ -97,10 +96,10 @@ export default function ArcadeQuestionPage({
 
   if (isLoading && !currentQuestion) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
-          <p className="text-muted-foreground">Loading your next question...</p>
+      <div className="max-w-4xl mx-auto p-6 h-screen b">
+        <div className="text-center space-y-4 mt-200 mt-48">
+          <Loader2 className="h-12 w-12 text-primary mx-auto animate-spin" />
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     );

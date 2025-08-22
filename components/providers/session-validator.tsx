@@ -1,8 +1,8 @@
 'use client'
 
-import { useValidatePersistedSession } from '@/lib/hooks/use-arcade'
+import { useActiveSession } from '@/lib/hooks/use-arcade'
 
 export function SessionValidator() {
-  useValidatePersistedSession()
+  useActiveSession()
   return null
 }

@@ -18,6 +18,7 @@ import {
   ChevronUp,
   ChevronLeft,
   ChevronRight,
+  Loader2,
 } from "lucide-react";
 import {
   Select,
@@ -71,7 +72,7 @@ async function fetchReviewData(
     limit: limit.toString(),
     filter,
   });
-  
+
   const response = await fetch(
     `/api/arcade/sessions/${sessionId}/review?${params}`
   );
@@ -91,34 +92,35 @@ export default function ArcadeReviewPage({ params }: ArcadeReviewPageProps) {
 
   // Initialize state from URL params
   const [filter, setFilter] = useState<"all" | "correct" | "incorrect">(
-    (searchParams.get('filter') as "all" | "correct" | "incorrect") || "all"
+    (searchParams.get("filter") as "all" | "correct" | "incorrect") || "all"
   );
   const [expandedQuestions, setExpandedQuestions] = useState<Set<number>>(
     new Set()
   );
   const [currentPage, setCurrentPage] = useState(
-    parseInt(searchParams.get('page') || '1')
+    parseInt(searchParams.get("page") || "1")
   );
   const questionsPerPage = 10;
 
   // Function to update URL with current state
   const updateURL = (page: number, filterValue: string) => {
     const params = new URLSearchParams();
-    if (page > 1) params.set('page', page.toString());
-    if (filterValue !== 'all') params.set('filter', filterValue);
-    
-    const newURL = params.toString() 
+    if (page > 1) params.set("page", page.toString());
+    if (filterValue !== "all") params.set("filter", filterValue);
+
+    const newURL = params.toString()
       ? `/arcade/${id}/review?${params.toString()}`
       : `/arcade/${id}/review`;
-    
+
     router.replace(newURL, { scroll: false });
   };
 
   // Sync URL params with state changes
   useEffect(() => {
-    const urlPage = parseInt(searchParams.get('page') || '1');
-    const urlFilter = (searchParams.get('filter') as "all" | "correct" | "incorrect") || "all";
-    
+    const urlPage = parseInt(searchParams.get("page") || "1");
+    const urlFilter =
+      (searchParams.get("filter") as "all" | "correct" | "incorrect") || "all";
+
     if (urlPage !== currentPage) {
       setCurrentPage(urlPage);
     }
@@ -132,8 +134,15 @@ export default function ArcadeReviewPage({ params }: ArcadeReviewPageProps) {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["arcade-review", sessionId, currentPage, questionsPerPage, filter],
-    queryFn: () => fetchReviewData(sessionId, currentPage, questionsPerPage, filter),
+    queryKey: [
+      "arcade-review",
+      sessionId,
+      currentPage,
+      questionsPerPage,
+      filter,
+    ],
+    queryFn: () =>
+      fetchReviewData(sessionId, currentPage, questionsPerPage, filter),
     enabled: !isNaN(sessionId),
     keepPreviousData: true,
   });
@@ -170,10 +179,10 @@ export default function ArcadeReviewPage({ params }: ArcadeReviewPageProps) {
 
   if (isLoading) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
-          <p className="text-muted-foreground">Loading session review...</p>
+      <div className="max-w-4xl mx-auto p-6 h-screen b">
+        <div className="text-center space-y-4 mt-200 mt-48">
+          <Loader2 className="h-12 w-12 text-primary mx-auto animate-spin" />
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
@@ -224,11 +233,18 @@ export default function ArcadeReviewPage({ params }: ArcadeReviewPageProps) {
       updateURL(newPage, filter);
     }
   };
-  
+
   // Get data from server response
   const totalPages = reviewData?.totalPages || 0;
-  const startIndex = reviewData ? (reviewData.currentPage - 1) * reviewData.questionsPerPage : 0;
-  const endIndex = reviewData ? Math.min(startIndex + reviewData.questionsPerPage, reviewData.totalQuestions) : 0;
+  const startIndex = reviewData
+    ? (reviewData.currentPage - 1) * reviewData.questionsPerPage
+    : 0;
+  const endIndex = reviewData
+    ? Math.min(
+        startIndex + reviewData.questionsPerPage,
+        reviewData.totalQuestions
+      )
+    : 0;
 
   // Use counts from API response
   const allCount = reviewData?.allCount || 0;
@@ -250,7 +266,6 @@ export default function ArcadeReviewPage({ params }: ArcadeReviewPageProps) {
         return question.choice_d || "";
     }
   };
-
 
   const toggleQuestionExpand = (questionId: number) => {
     const newExpanded = new Set(expandedQuestions);
@@ -296,9 +311,7 @@ export default function ArcadeReviewPage({ params }: ArcadeReviewPageProps) {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">
-                All Questions ({allCount})
-              </SelectItem>
+              <SelectItem value="all">All Questions ({allCount})</SelectItem>
               <SelectItem value="correct">
                 Correct Only ({correctCount})
               </SelectItem>
@@ -308,11 +321,12 @@ export default function ArcadeReviewPage({ params }: ArcadeReviewPageProps) {
             </SelectContent>
           </Select>
         </div>
-        
+
         {/* Pagination Info */}
         {reviewData && reviewData.questions.length > 0 && (
           <div className="text-sm text-muted-foreground">
-            Showing {startIndex + 1}-{endIndex} of {reviewData.totalQuestions} questions
+            Showing {startIndex + 1}-{endIndex} of {reviewData.totalQuestions}{" "}
+            questions
             {totalPages > 1 && (
               <span className="ml-2">
                 (Page {reviewData.currentPage} of {reviewData.totalPages})
@@ -330,7 +344,10 @@ export default function ArcadeReviewPage({ params }: ArcadeReviewPageProps) {
               <div className="text-muted-foreground">
                 No questions match the current filter.
               </div>
-              <Button onClick={() => handleFilterChange("all")} variant="outline">
+              <Button
+                onClick={() => handleFilterChange("all")}
+                variant="outline"
+              >
                 <RotateCcw className="w-4 h-4 mr-2" />
                 Show All Questions
               </Button>
@@ -502,11 +519,12 @@ export default function ArcadeReviewPage({ params }: ArcadeReviewPageProps) {
             <ChevronLeft className="w-4 h-4 mr-1" />
             Previous
           </Button>
-          
+
           <div className="text-sm text-muted-foreground">
-            Page {reviewData?.currentPage || currentPage} of {reviewData?.totalPages || totalPages}
+            Page {reviewData?.currentPage || currentPage} of{" "}
+            {reviewData?.totalPages || totalPages}
           </div>
-          
+
           <Button
             onClick={goToNextPage}
             disabled={reviewData ? currentPage === reviewData.totalPages : true}
