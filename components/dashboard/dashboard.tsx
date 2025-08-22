@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Play, Plus, RotateCcw, BookOpen, Clock, Target } from 'lucide-react'
+import { Play, Plus, RotateCcw, BookOpen, Clock, Target, Gamepad2 } from 'lucide-react'
 import Link from 'next/link'
 
 export function Dashboard() {
@@ -93,11 +93,23 @@ export function Dashboard() {
       )}
 
       {/* Quick Actions */}
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-4">
+        <Button 
+          asChild
+          size="lg" 
+          className="h-20 flex flex-col gap-2 bg-gradient-to-r from-primary to-primary/80"
+        >
+          <Link href="/arcade">
+            <Gamepad2 className="h-6 w-6" />
+            Arcade Mode
+          </Link>
+        </Button>
+        
         <Button 
           asChild
           size="lg" 
           className="h-20 flex flex-col gap-2"
+          variant="outline"
         >
           <Link href="/study/create">
             <Plus className="h-6 w-6" />

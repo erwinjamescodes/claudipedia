@@ -81,3 +81,48 @@
       BEFORE UPDATE ON study_sessions
       FOR EACH ROW
       EXECUTE FUNCTION update_updated_at_column();
+
+
+  -- Create arcade_sessions table
+  CREATE TABLE arcade_sessions (
+    id SERIAL PRIMARY KEY,
+    user_id UUID REFERENCES auth.users(id),
+    total_questions INTEGER DEFAULT 1100,
+    questions_completed INTEGER DEFAULT 0,
+    correct_answers INTEGER DEFAULT 0,
+    is_active BOOLEAN DEFAULT true,
+    started_at TIMESTAMP DEFAULT NOW(),
+    completed_at TIMESTAMP,
+    total_time_seconds INTEGER DEFAULT 0
+  );
+
+  -- Create arcade_progress table
+  CREATE TABLE arcade_progress (
+    id SERIAL PRIMARY KEY,
+    arcade_session_id INTEGER REFERENCES arcade_sessions(id) ON DELETE CASCADE,
+    question_id INTEGER REFERENCES questions(id),
+    user_answer CHAR(1), -- 'a', 'b', 'c', 'd', or NULL for skipped
+    correct_answer CHAR(1),
+    is_correct BOOLEAN,
+    time_spent_seconds INTEGER,
+    answered_at TIMESTAMP DEFAULT NOW(),
+    UNIQUE(arcade_session_id, question_id) -- Ensures no question appears twice
+  );
+
+  -- Create arcade_question_pool table
+  CREATE TABLE arcade_question_pool (
+    id SERIAL PRIMARY KEY,
+    arcade_session_id INTEGER REFERENCES arcade_sessions(id) ON DELETE CASCADE,
+    question_id INTEGER REFERENCES questions(id),
+    is_used BOOLEAN DEFAULT false,
+    randomized_order INTEGER,
+    created_at TIMESTAMP DEFAULT NOW()
+  );
+
+  -- Create indexes for better performance
+  CREATE INDEX idx_arcade_sessions_user_id ON arcade_sessions(user_id);
+  CREATE INDEX idx_arcade_sessions_is_active ON arcade_sessions(is_active);
+  CREATE INDEX idx_arcade_progress_session_id ON arcade_progress(arcade_session_id);
+  CREATE INDEX idx_arcade_question_pool_session_id ON arcade_question_pool(arcade_session_id);
+  CREATE INDEX idx_arcade_question_pool_order ON arcade_question_pool(arcade_session_id, randomized_order);
+  CREATE INDEX idx_arcade_question_pool_unused ON arcade_question_pool(arcade_session_id, is_used) WHERE is_used = false;
