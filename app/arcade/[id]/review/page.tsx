@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { AlertDescription } from "@/components/ui/alert";
+import { CHAPTERS, ChapterKey } from "@/lib/constants";
 import {
   CheckCircle,
   XCircle,
@@ -285,7 +286,7 @@ export default function ArcadeReviewPage({ params }: ArcadeReviewPageProps) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
+    <div className="max-w-4xl mx-auto p-6 space-y-6 pb-40">
       {/* Header */}
       <div className="flex items-center justify-between mt-8">
         <div className="flex items-center gap-3">
@@ -379,12 +380,17 @@ export default function ArcadeReviewPage({ params }: ArcadeReviewPageProps) {
                     <div className="space-y-4 flex-1">
                       <div className="flex items-center justify-between gap-2 flex-wrap">
                         <div className="flex items-center gap-2 flex-wrap flex-1 justify-between">
-                          <Badge className="text-xs lowercase">
+                          <div
+                            className={`inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold text-gray-800 ${
+                              CHAPTERS[question.chapter as ChapterKey]?.color ||
+                              "bg-gray-200"
+                            } lowercase`}
+                          >
                             {question.chapter
                               .replace(/_/g, " ")
                               .replace(/^\d+\s*/, "")
                               .toUpperCase()}
-                          </Badge>
+                          </div>
 
                           {question.is_correct ? (
                             <div className="text-green-700 bg-transparent flex items-center gap-1 text-sm">

@@ -245,7 +245,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
 
         <TabsContent value="overview" className="space-y-4">
           {/* Chapter Summary Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-4 mt-4">
             <Card className="border-green-200">
               <CardContent className="p-6 text-center">
                 <div className="text-3xl font-bold text-green-600 mb-2">
@@ -357,7 +357,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
           </Card>
         </TabsContent>
 
-        <TabsContent value="performance" className="space-y-4">
+        <TabsContent value="performance" className="space-y-4 mt-4">
           <Card>
             <CardHeader>
               <CardTitle>Chapter Performance Breakdown</CardTitle>
@@ -507,7 +507,7 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
           </Card>
         </TabsContent>
 
-        <TabsContent value="insights" className="space-y-4">
+        <TabsContent value="insights" className="space-y-4 mt-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <Card>
               <CardHeader>

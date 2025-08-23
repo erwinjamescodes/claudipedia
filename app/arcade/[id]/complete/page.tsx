@@ -49,7 +49,7 @@ export default function ArcadeCompletePage({ params }: ArcadeCompletePageProps) 
   }
 
   const handleBackToDashboard = () => {
-    router.push('/protected')
+    router.push('/arcade')
   }
 
   const handleReviewAnswers = () => {
