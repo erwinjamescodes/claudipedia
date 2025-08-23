@@ -9,12 +9,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { AlertDescription } from "@/components/ui/alert";
-import {
-  CheckCircle,
-  XCircle,
-  ArrowLeft,
-  Loader2,
-} from "lucide-react";
+import { CheckCircle, XCircle, ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useArcadeStore } from "@/lib/stores/arcade-store";
 import {
@@ -97,7 +92,7 @@ export default function ArcadeQuestionPage({
     try {
       // Fetch the next question first
       await refetch();
-      
+
       // Only clear state after new question is loaded
       nextQuestion();
       setSelectedAnswer(null);
@@ -109,7 +104,6 @@ export default function ArcadeQuestionPage({
   const handleBackToLanding = () => {
     router.push("/arcade");
   };
-
 
   if (isLoading && !currentQuestion) {
     return (
@@ -181,7 +175,7 @@ export default function ArcadeQuestionPage({
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
+    <div className="max-w-4xl mx-auto p-6 space-y-6 pb-40">
       {/* Header */}
       <div className="flex items-center justify-between mt-8 ">
         <div className="flex items-center gap-3 ">
@@ -339,11 +333,7 @@ export default function ArcadeQuestionPage({
             {/* Action Buttons */}
             <div className="flex gap-3">
               {isLoadingNext ? (
-                <Button
-                  disabled={true}
-                  className="flex-1"
-                  size="lg"
-                >
+                <Button disabled={true} className="flex-1" size="lg">
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   Please wait...
                 </Button>

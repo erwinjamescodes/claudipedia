@@ -117,7 +117,7 @@ export default function ArcadePage() {
   }
 
   return (
-    <div className="flex flex-col max-w-4xl mx-auto p-6 gap-8 min-h-screen ">
+    <div className="flex flex-col max-w-4xl mx-auto p-6 gap-8 min-h-screen pb-40">
       {/* Header */}
       <div className="text-center space-y-4">
         <div className="flex items-start justify-between mt-20">
